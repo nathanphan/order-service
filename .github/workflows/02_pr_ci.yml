@@ -1,0 +1,35 @@
+name: 02 - PR CI
+
+on:
+  pull_request:
+    branches: ["main"]
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  pr-ci:
+    name: PR Checks (Gradle JUnit)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: Build & Unit Test
+        run: ./gradlew clean test --no-daemon
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "### PR CI summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "- JDK: 21" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Branch: ${{ github.head_ref || github.ref_name }}" >> "$GITHUB_STEP_SUMMARY"
