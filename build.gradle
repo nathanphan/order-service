@@ -1,0 +1,12 @@
+plugins {
+  id 'java'
+  id 'application' // optional, if you want a runnable main class
+}
+repositories { mavenCentral() }
+dependencies {
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
+}
+test { useJUnitPlatform() }
+application {
+  mainClass = 'com.example.App'
+}
