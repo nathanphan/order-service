@@ -1,0 +1,50 @@
+name: 06 - Reusable Workflow (Java CI Core)
+
+on:
+  workflow_call:
+    inputs:
+      java:
+        description: "JDK version"
+        type: string
+        required: false
+        default: "21"
+      workdir:
+        description: "Working directory"
+        type: string
+        required: false
+        default: "."
+
+jobs:
+  ci-core:
+    name: CI Core (JDK ${{ inputs.java }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.workdir }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ inputs.java }}
+          cache: gradle
+
+      - name: Test
+        run: ./gradlew clean test --no-daemon
+
+      - name: Upload test report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-${{ runner.os }}-jdk${{ inputs.java }}
+          path: |
+            build/reports/tests/test/**
+            **/build/reports/tests/test/**
+          retention-days: 7

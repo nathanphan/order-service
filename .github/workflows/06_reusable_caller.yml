@@ -1,0 +1,14 @@
+name: 06 - Reusable Caller
+
+on:
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  use-core:
+    name: PR Checks (Reusable CI Core)
+    uses: ./.github/workflows/06_reusable_workflow.yml
+    with:
+      java: "21"
+      workdir: "."    # single-service repo root
