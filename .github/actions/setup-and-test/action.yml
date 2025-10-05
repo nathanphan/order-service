@@ -1,0 +1,16 @@
+name: Setup and Test (Java Gradle)
+description: "Sets up Java and runs Gradle tests"
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Java
+    # In composite actions, you can't accept inputs to setup-java directly unless you define inputs.
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: "21"
+        cache: gradle
+
+    - name: Test
+      shell: bash
+      run: ./gradlew clean test --no-daemon

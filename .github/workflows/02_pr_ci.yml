@@ -4,7 +4,14 @@ on:
   pull_request:
     branches: ["main"]
     types: [opened, synchronize, reopened]
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
   workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   pr-ci:
@@ -17,15 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "21"
-          cache: gradle
-
-      - name: Build & Unit Test
-        run: ./gradlew clean test --no-daemon
+      - uses: ./.github/actions/setup-and-test/action
 
       - name: Summary
         if: always()
