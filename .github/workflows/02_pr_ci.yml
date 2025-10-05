@@ -24,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: ./.github/actions/setup-and-test/action
+      - uses: ./.github/actions/setup-and-test
 
       - name: Summary
         if: always()
